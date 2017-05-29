@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
-import FirebaseAuth from '../Firebase/Firebase';
+import {FirebaseAuth} from '../Firebase/Firebase';
 
 /**
  * If logged out:
@@ -18,10 +18,7 @@ class Login extends Component {
     this.handleLoginClick = this.handleLoginClick.bind(this);
     this.handleLogoutClick = this.handleLogoutClick.bind(this);
 
-    this.state = {
-      name: "unknown",
-      isLoggedIn: false
-    };
+    this.state = {name: "unknown"};
 
     // setup handling of a successful login.
     // TODO consider the effect of the UI here - a user has to wait for firebase
@@ -46,7 +43,7 @@ class Login extends Component {
 
   handleLogoutClick() {
     FirebaseAuth().signOut()
-      .then(() => this.setState({isLoggedIn: false}));
+      .then(() => this.props.onLogout());
   }
 
   handleLogin(loginResult) {
@@ -66,13 +63,14 @@ class Login extends Component {
     console.log("*** Logged in as user: " + user.displayName + " ***");
     // re-render the Login component as logged in
     this.setState({
-      name: user.displayName,
-       isLoggedIn: true
+      name: user.displayName
     });
+
+    this.props.onLogin(user);
   }
 
   render() {
-    const isLoggedIn = this.state.isLoggedIn;
+    const isLoggedIn = this.props.isLoggedIn;
     const name = this.state.name;
     let button = null;
 
