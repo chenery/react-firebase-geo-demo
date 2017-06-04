@@ -1,5 +1,5 @@
 ## TODO
-
+- Implement a block system to stop the negative state rendering before any async processing is completed.  E.g. auth login.   
 - Lookup and persist Facebook friends
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).

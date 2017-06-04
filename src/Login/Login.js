@@ -18,8 +18,6 @@ class Login extends Component {
     this.handleLoginClick = this.handleLoginClick.bind(this);
     this.handleLogoutClick = this.handleLogoutClick.bind(this);
 
-    this.state = {name: "unknown"};
-
     // setup handling of a successful login.
     // TODO consider the effect of the UI here - a user has to wait for firebase
     // to produce the redirect result before showing the user they have logged
@@ -61,17 +59,12 @@ class Login extends Component {
     }
 
     console.log("*** Logged in as user: " + user.displayName + " ***");
-    // re-render the Login component as logged in
-    this.setState({
-      name: user.displayName
-    });
-
     this.props.onLogin(user);
   }
 
   render() {
     const isLoggedIn = this.props.isLoggedIn;
-    const name = this.state.name;
+    const name = this.props.name;
     let button = null;
 
     if (isLoggedIn) {
