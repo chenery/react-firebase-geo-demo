@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import {FirebaseAuth} from '../Repository/Firebase';
+import {UserStore} from '../Repository/Firebase';
 
 /**
  * If logged out:
@@ -59,7 +60,11 @@ class Login extends Component {
     }
 
     console.log("*** Logged in as user: " + user.displayName + " ***");
-    this.props.onLogin(user);
+
+    UserStore.saveUser(user.uid, user.email, user.displayName, user.photoURL)
+      .then(user => {
+        this.props.onLogin(user);
+      });
   }
 
   render() {

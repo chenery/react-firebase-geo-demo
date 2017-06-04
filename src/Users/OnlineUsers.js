@@ -6,10 +6,7 @@ import {UserStore} from '../Repository/Firebase';
 class OnlineUsers extends Component {
   constructor(props) {
     super(props);
-
     this.usersUpdated = this.usersUpdated.bind(this);
-
-    console.log('Constructing Online Users');
     this.state = {
         users: []
     };

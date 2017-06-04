@@ -4,8 +4,8 @@ import './App.css';
 import Login from './Login/Login';
 import Location from './Location/Location';
 import OnlineUsers from "./Users/OnlineUsers"
-import {UserStore} from './Repository/Firebase';
 import {FirebaseAuth} from './Repository/Firebase';
+import {LocationStore} from './Repository/Firebase';
 
 class App extends Component {
 
@@ -40,28 +40,27 @@ class App extends Component {
             "photoURL": user.photoURL
         };
 
-        console.log("Already logged in as %s", user.uid);
-
-        // TODO init APP state (isOnline) from the DB
-        this.setState({
-          isLoggedIn: true,
-          user: userToAutoLogin
-        });
+        console.log("Already logged in as %s", userToAutoLogin.id);
+        this.onLogin(userToAutoLogin);
       }
     });
   }
 
-  // TODO init APP state (isOnline) from the DB
   onLogin(loggedInUser) {
     console.log('App has seen new login');
-    // TODO actually this looks nicer in a lower component
-    UserStore.saveUser(loggedInUser.uid, loggedInUser.email, loggedInUser.displayName, loggedInUser.photoURL)
-      .then(user => {
-        console.log('User saved after login, logged in App state');
-        this.setState({
+    // init APP state (isOnline) from the DB
+    LocationStore.getLocation(loggedInUser.id)
+      .then((location) => {
+        var updatedState = {
           isLoggedIn: true,
-          user: user
-        });
+          user: loggedInUser
+        };
+        if (location) {
+          console.log("User is already online at %s", location);
+          updatedState.userLocationPin = location;
+          updatedState.isOnline = true;
+        }
+        this.setState(updatedState);
       });
   }
 

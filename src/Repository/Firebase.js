@@ -115,6 +115,10 @@ export const UserStore = {
 
 export const LocationStore = {
 
+  getLocation: function(userId) {
+    return geoFire.get(userId);
+  },
+
   saveLocation: function(userId, latitude, longitude) {
     return new Promise((resolve, reject) => {
       var locationPin = [latitude, longitude];
