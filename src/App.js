@@ -65,12 +65,15 @@ class App extends Component {
   }
 
   onLogout() {
-    this.setState({
-      isLoggedIn: false,
-      isOnline: false,
-      user: null,
-      userLocationPin: null
-    });
+    LocationStore.removeLocation(this.state.user.id)
+      .then(() => {
+        this.setState({
+          isLoggedIn: false,
+          isOnline: false,
+          user: null,
+          userLocationPin: null
+        });
+      });
   }
 
   onLine(userLocationPin) {
@@ -81,12 +84,16 @@ class App extends Component {
     });
   }
 
-  offLine() {
+  offLine(userId) {
     console.log('App state moving offline');
-    this.setState({
-      isOnline: false,
-      userLocationPin: null
-    });
+
+    LocationStore.removeLocation(userId)
+      .then(() => {
+        this.setState({
+          isOnline: false,
+          userLocationPin: null
+        });
+      });
   }
 
   render() {

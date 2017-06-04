@@ -31,11 +31,7 @@ class Location extends Component {
   }
 
   handleOffline() {
-    var that = this;
-    LocationStore.removeLocation(this.props.userId)
-      .then(() => {
-        that.props.offLine();
-      });
+    this.props.offLine(this.props.userId);
   }
 
   render() {
