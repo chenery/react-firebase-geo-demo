@@ -3,7 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import Login from './Login/Login';
 import Location from './Location/Location';
-import {UserStore} from './Firebase/Firebase';
+import OnlineUsers from "./Users/OnlineUsers"
+import {UserStore} from './Repository/Firebase';
 
 class App extends Component {
 
@@ -12,15 +13,24 @@ class App extends Component {
 
     this.onLogin = this.onLogin.bind(this);
     this.onLogout = this.onLogout.bind(this);
+    this.onLine = this.onLine.bind(this);
+    this.offLine = this.offLine.bind(this);
 
-    // isLoggedIn is a top level state, and passed down into child components
-    this.state = {isLoggedIn: false};
+    // isLoggedIn & isOnline is a top level state, and passed down into child components
+    // TODO init APP state from the DB
+    this.state = {
+      isLoggedIn: false,
+      isOnline: false,
+      user: null,
+      userLocationPin: null
+    };
   }
 
   onLogin(loggedInUser) {
     console.log('App has seen login');
     // TODO is it possible to auto save based on state?
-    UserStore.saveUser(loggedInUser.email, loggedInUser.displayName, loggedInUser.photoURL)
+    // TODO actually this looks nicer in a lower component
+    UserStore.saveUser(loggedInUser.uid, loggedInUser.email, loggedInUser.displayName, loggedInUser.photoURL)
       .then(user => {
         console.log('User saved after login, logged in App state');
         this.setState({
@@ -31,11 +41,35 @@ class App extends Component {
   }
 
   onLogout() {
-    this.setState({isLoggedIn: false});
+    this.setState({
+      isLoggedIn: false,
+      isOnline: false,
+      user: null,
+      userLocationPin: null
+    });
+  }
+
+  onLine(userLocationPin) {
+    console.log('App state moving online');
+    this.setState({
+      isOnline: true,
+      userLocationPin: userLocationPin
+    });
+  }
+
+  offLine() {
+    console.log('App state moving offline');
+    this.setState({
+      isOnline: false,
+      userLocationPin: null
+    });
   }
 
   render() {
     const isLoggedIn = this.state.isLoggedIn;
+    const isOnline = this.state.isLoggedIn && this.state.isOnline;
+    const user = this.state.user;
+    const userLocationPin = this.state.userLocationPin;
     return (
       <div className="App">
         <div className="App-header">
@@ -43,7 +77,8 @@ class App extends Component {
           <h2>Welcome to React</h2>
         </div>
         <Login isLoggedIn={isLoggedIn} onLogin={this.onLogin} onLogout={this.onLogout}/>
-        {isLoggedIn && <Location userId={this.state.user.id} />}
+        {isLoggedIn && <Location userId={user.id} isOnline={isOnline} onLine={this.onLine} offLine={this.offLine} />}
+        {isOnline && <OnlineUsers userLocationPin={userLocationPin} />}
       </div>
     );
   }

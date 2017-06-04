@@ -1,6 +1,5 @@
 ## TODO
 
-- Set the user id to match the Firebase Auth one
 - Lookup and persist Facebook friends
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
-import {FirebaseAuth} from '../Firebase/Firebase';
+import {FirebaseAuth} from '../Repository/Firebase';
 
 /**
  * If logged out:
@@ -92,8 +92,8 @@ class Login extends Component {
     console.log('Login component mounted');
   }
 
-  componentWillMount() {
-    console.log('Login component about to unmount');
+  componentWillUnmount() {
+    console.log('Login component will unmount');
   }
 }
 

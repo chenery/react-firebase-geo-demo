@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {LocationStore} from '../Firebase/Firebase';
+import {LocationStore} from '../Repository/Firebase';
 
 class Location extends Component {
   constructor(props) {
@@ -7,13 +7,9 @@ class Location extends Component {
 
     this.handleOnline = this.handleOnline.bind(this);
     this.handleOffline = this.handleOffline.bind(this);
-
-    this.state = {isOnline: false};
   }
 
   handleOnline() {
-    this.setState({isOnline: true});
-
     if (!navigator.geolocation) {
       console.error('Geolocation is not supported by this browser');
       return;
@@ -22,21 +18,28 @@ class Location extends Component {
     // TODO tidy this up to avoid need to that=this
     var that = this;
     navigator.geolocation.getCurrentPosition(function(position) {
-        console.log("User is located at lat: " + position.coords.latitude
-          + " lng: " + position.coords.longitude);
 
-        LocationStore.saveLocation(that.props.userId, position.coords.latitude,
-          position.coords.longitude);
+      var latitude = position.coords.latitude;
+      var longitude = position.coords.longitude;
+      console.log("User is located at lat: " + latitude + " lng: " + longitude);
+
+      LocationStore.saveLocation(that.props.userId, latitude, longitude)
+        .then(() => {
+          that.props.onLine([latitude, longitude]);
+        });
     });
   }
 
   handleOffline() {
-    this.setState({isOnline: false});
-    LocationStore.removeLocation(this.props.userId);
+    var that = this;
+    LocationStore.removeLocation(this.props.userId)
+      .then(() => {
+        that.props.offLine();
+      });
   }
 
   render() {
-    const isOnline = this.state.isOnline;
+    const isOnline = this.props.isOnline;
     let button = null;
 
     if (isOnline) {
